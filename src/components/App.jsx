@@ -7,23 +7,18 @@ import { SearchFilter } from './SearchFilter';
 import { Notification } from './Notification/Notification';
 
 export const App = () => {
-  const [contacts, setContacts] = useState([]);
-  const [contactsLoaded, setContactsLoaded] = useState(false);
+  const [contacts, setContacts] = useState(() => {
+    const savedContacts = JSON.parse(localStorage.getItem('contacts'));
+    if (savedContacts) {
+      return savedContacts;
+    }
+    return [];
+  });
   const [filter, setFilter] = useState('');
 
   useEffect(() => {
-    const savedContacts = JSON.parse(localStorage.getItem('contacts'));
-    if (savedContacts) {
-      setContacts(savedContacts);
-      setContactsLoaded(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (contactsLoaded) {
-      localStorage.setItem('contacts', JSON.stringify(contacts));
-    }
-  }, [contacts, contactsLoaded]);
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
 
   const handleChange = event => {
     const { value } = event.target;
